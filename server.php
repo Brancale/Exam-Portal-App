@@ -24,7 +24,7 @@
 
 	// Query DB
 	$sql = "SELECT ID, PWD FROM USERS WHERE ID = " . $userid;
-	echo $sql . "<br>";
+	echo $sql . "\n";
 	$result = $conn->query($sql);
 
 	// SAMPLE to insert into DB:
@@ -39,13 +39,13 @@
 		$recordFound = 1;
 	    // output data of each row
 	    while($row = $result->fetch_assoc()) {
-	        echo "ID: " . $row["ID"]. " - PWD: " . $row["PWD"]. "<br>";
+	        echo "ID: " . $row["ID"]. " - PWD: " . $row["PWD"]. "\n";
 	    }
 	    $hash = $row["PWD"];
 	} elseif ($result->num_rows > 1) {
-		echo "DB entry error. Too many rows with same key.<br>";
+		echo "DB entry error. Too many rows with same key.\n";
 	} else {
-	    echo "0 results<br>";
+	    echo "0 results\n";
 	}
 
 	$jsonData = array(
@@ -54,13 +54,13 @@
 
 	if ($recordFound = 1) {
 		if (password_verify($userpwd, $hash)) {
-		    echo "Password matches<br>";
+		    echo "Password matches\n";
 		    //The JSON data.
 			$jsonData = array(
 			    'isValid' => 'true'
 			);
 		} else {
-		    echo "Password does not match<br>";
+		    echo "Password does not match\n";
 		}
 	}
 
@@ -70,7 +70,7 @@
 	$conn->close();
 
 	// Initiate cURL
-	$postRequest = curl_init("https://web.njit.edu/~jmb75/resptest.php");
+	$postRequest = curl_init("https://web.njit.edu/~jmb75/servertest.php");
 	 
 	// Specify post request in curl (CURLOPT_POST)
 	curl_setopt($postRequest, CURLOPT_POST, 1);

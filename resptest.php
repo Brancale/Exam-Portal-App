@@ -1,5 +1,5 @@
 <?php
-	
+	/*
 	# Get Post Request From mid-end
 	$input=file_get_contents('php://input');
 	$json=json_decode($input);
@@ -31,4 +31,6 @@
 	 
 	// Execute the request
 	$result = curl_exec($postRequest);
+	*/
+	echo "Nice meme"
 ?>
