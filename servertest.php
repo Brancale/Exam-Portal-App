@@ -1,10 +1,9 @@
  <?php
 
  	echo "Creating JSON object\n";
-	$jsonData = array(
-	    'username' => 'user',
-	    'password' => 'password'
-	);
+	$jsonData = array();
+	$response["username"] = "user";
+	$response["password"] = "password";
 
 	echo $jsonData . "\n";
 
@@ -37,10 +36,23 @@
 	$result = curl_exec($postRequest);
 	curl_close($postRequest);
 
-		$json = json_decode($message,true);
-		echo "Object received.\n";
-		# Get Post Request From mid-end
-		$isValid=$json->{"isValid"};
+	$json = json_decode($result,true);
+	echo "Object received.\n";
+	echo $json . "\nJSON ^^\n";
+	/*// Iterate through JSON results
+	$jsonIterator = new RecursiveIteratorIterator(
+    new RecursiveArrayIterator(json_decode($result, TRUE)),
+    RecursiveIteratorIterator::SELF_FIRST);
 
-		echo $isValid . "<br>";
+	foreach ($jsonIterator as $key => $val) {
+	    if(is_array($val)) {
+	        echo "$key:\n";
+	    } else {
+	        echo "$key => $val\n";
+	    }
+	}
+	*/
+	$jsonDataResult=$json['isValid'];
+
+	echo $jsonDataResult . "\nFILE CONTENTS ^^\n";
 ?> 
