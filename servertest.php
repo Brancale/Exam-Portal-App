@@ -1,8 +1,17 @@
  <?php
+ 	/*
+ 	 * Created by James Brancale
+ 	 * 9/9/2018
+ 	 * CS490 - Tier 3 - Server/Backend
+ 	 * Server test code
+ 	 */
 
+ 	//// START Perform cURL post request to DB server ////
+
+ 	// Create JSON object to send, with username and password to query DB
  	echo "Creating JSON object\n";
 	$jsonData = array();
-	$jsonData["username"] = "user";
+	$jsonData["username"] = "username";
 	$jsonData["password"] = "password";
 
 	//echo $jsonData["username"] . "\n";
@@ -11,8 +20,11 @@
 	// Encode the array into JSON.
 	$jsonDataEncoded = json_encode($jsonData);
 
-	// Initiate cURL
+	// Initialize cURL
 	$postRequest = curl_init();
+
+	// Initialize URL
+	$url = "https://web.njit.edu/~jmb75/server.php";
 	 
 	// Specify post request in curl (CURLOPT_POST)
 	curl_setopt($postRequest, CURLOPT_POST, true);
@@ -21,10 +33,14 @@
 	curl_setopt($postRequest, CURLOPT_POSTFIELDS, $jsonDataEncoded);
 
 	curl_setopt($postRequest, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
-	curl_setopt($postRequest, CURLOPT_URL, "https://web.njit.edu/~jmb75/server.php");
 
+	// Set URL to send to
+	curl_setopt($postRequest, CURLOPT_URL, $url);
 
+	// Print cURL statistics
 	curl_setopt($postRequest, CURLOPT_VERBOSE, true);
+
+	// Expect return value to store in $result
 	curl_setopt($postRequest, CURLOPT_RETURNTRANSFER, true);
 	 
 	// Set Content-Type to application/json and Content-Length to length of content.
@@ -37,9 +53,12 @@
 	$result = curl_exec($postRequest);
 	curl_close($postRequest);
 
+	//// END Perform cURL post request to DB server ////
+
+	//// START Collect JSON Response ////
+
 	$json = json_decode($result,true);
 	echo $result . "\nObject received.\n";
-	echo $json . "\nJSON ^^\n";
 	/*// Iterate through JSON results
 	$jsonIterator = new RecursiveIteratorIterator(
     new RecursiveArrayIterator(json_decode($result, TRUE)),
@@ -55,7 +74,7 @@
 	*/
 	$jsonDataResult=$json["isValid"];
 
-	echo $jsonDataResult . "\nFILE CONTENTS ^^\n";
-	echo $json["username"] . "\n";
-	echo $json["password"] . "\n";
+	echo "Response: isValid : " . $jsonDataResult;
+
+	//// END Collect JSON Response ////
 ?> 
