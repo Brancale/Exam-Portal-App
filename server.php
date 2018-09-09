@@ -70,13 +70,20 @@
 	$conn->close();
 
 	// Initiate cURL
-	$postRequest = curl_init("https://web.njit.edu/~jmb75/servertest.php");
+	$postRequest = curl_init();
 	 
 	// Specify post request in curl (CURLOPT_POST)
 	curl_setopt($postRequest, CURLOPT_POST, 1);
 	 
 	// Attach encoded JSON string to POST fields
 	curl_setopt($postRequest, CURLOPT_POSTFIELDS, $jsonDataEncoded);
+
+	curl_setopt($postRequest, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
+	curl_setopt($postRequest, CURLOPT_URL, "https://web.njit.edu/~jmb75/servertest.php");
+
+
+	curl_setopt($postRequest, CURLOPT_VERBOSE, 1);
+	curl_setopt($postRequest, CURLOPT_RETURNTRANSFER, 1);
 	 
 	// Set Content-Type to application/json and Content-Length to length of content.
     curl_setopt($postRequest, CURLOPT_HTTPHEADER, array(
