@@ -83,16 +83,15 @@
 
 
 	curl_setopt($postRequest, CURLOPT_VERBOSE, 1);
-	curl_setopt($postRequest, CURLOPT_RETURNTRANSFER, 1);
 	 
 	// Set Content-Type to application/json and Content-Length to length of content.
     curl_setopt($postRequest, CURLOPT_HTTPHEADER, array(
-      'Content-Type: application/json',
-      'Content-Length: ' . strlen($content))
+      'Content-Type: application/json')
     );
 	 
 	// Execute the request
-	$result = curl_exec($postRequest);
+	curl_exec($postRequest);
+	echo "test\n";
 
 	curl_close($postRequest);
 ?> 

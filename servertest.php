@@ -29,13 +29,13 @@
 	 
 	// Set Content-Type to application/json and Content-Length to length of content.
     curl_setopt($postRequest, CURLOPT_HTTPHEADER, array(
-      'Content-Type: application/json',
-      'Content-Length: ' . strlen($content))
+      'Content-Type: application/json')
     );
 	 
 	echo "Sending JSON obj to server...\n";
 	// Execute the request
 	$message = curl_exec($postRequest);
+	curl_close($postRequest);
 
 		$result = json_decode($message,true);
 		echo "Object received.\n";
@@ -45,8 +45,4 @@
 		$isValid=$json->{"isValid"};
 
 		echo $isValid . "<br>";
-
-	curl_close($postRequest);
-
-
 ?> 
