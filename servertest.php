@@ -2,10 +2,11 @@
 
  	echo "Creating JSON object\n";
 	$jsonData = array();
-	$response["username"] = "user";
-	$response["password"] = "password";
+	$jsonData["username"] = "user";
+	$jsonData["password"] = "password";
 
-	echo $jsonData . "\n";
+	//echo $jsonData["username"] . "\n";
+	//echo $jsonData["password"] . "\n";
 
 	// Encode the array into JSON.
 	$jsonDataEncoded = json_encode($jsonData);
@@ -37,7 +38,7 @@
 	curl_close($postRequest);
 
 	$json = json_decode($result,true);
-	echo "Object received.\n";
+	echo $result . "\nObject received.\n";
 	echo $json . "\nJSON ^^\n";
 	/*// Iterate through JSON results
 	$jsonIterator = new RecursiveIteratorIterator(
@@ -52,7 +53,9 @@
 	    }
 	}
 	*/
-	$jsonDataResult=$json['isValid'];
+	$jsonDataResult=$json["isValid"];
 
 	echo $jsonDataResult . "\nFILE CONTENTS ^^\n";
+	echo $json["username"] . "\n";
+	echo $json["password"] . "\n";
 ?> 

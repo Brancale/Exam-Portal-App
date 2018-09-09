@@ -1,13 +1,14 @@
  <?php
 
+	header("Content-type: application/json");
 	# Get Post Request From mid-end
 	$input=file_get_contents('php://input');
 	$json=json_decode($input);
-	$userid=$json["username"];
-	$userpwd=$json["password"];
+	$userid=$json->{"username"};
+	$userpwd=$json->{"password"};
 
-	//echo $userid;
-	//echo $userpwd;
+	//echo "User: " . $userid . "\n";
+	//echo "Pawd: " . $userpwd . "\n";
 
 	// Credentials
 	$servername = "sql2.njit.edu";
@@ -62,13 +63,12 @@
 	} else {
 		$response["isValid"] = "false";
 	}
-
-	// Encode the array into JSON.
-	$jsonDataEncoded = json_encode($jsonData);
+	$response["username"] = $userid;
+	$response["password"] = $userpwd;
 
 	// Respond with JSON object
 	$json_response = json_encode($response);
 	echo $json_response;
-	header("Content-type: application/json");
+	
 	//echo "test\n";
 ?> 
