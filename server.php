@@ -73,7 +73,7 @@
 	$postRequest = curl_init();
 	 
 	// Specify post request in curl (CURLOPT_POST)
-	curl_setopt($postRequest, CURLOPT_POST, 1);
+	curl_setopt($postRequest, CURLOPT_POST, true);
 	 
 	// Attach encoded JSON string to POST fields
 	curl_setopt($postRequest, CURLOPT_POSTFIELDS, $jsonDataEncoded);
