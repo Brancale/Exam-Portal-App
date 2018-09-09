@@ -79,7 +79,7 @@
 	curl_setopt($postRequest, CURLOPT_POSTFIELDS, $jsonDataEncoded);
 
 	curl_setopt($postRequest, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
-	curl_setopt($postRequest, CURLOPT_URL, "https://web.njit.edu/~jmb75/servertest.php");
+	curl_setopt($postRequest, CURLOPT_URL, "https://web.njit.edu/~jmb75/servertest.php"	);
 
 
 	curl_setopt($postRequest, CURLOPT_VERBOSE, 1);

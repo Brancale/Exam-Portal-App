@@ -37,9 +37,7 @@
 	// Execute the request
 	$message = curl_exec($postRequest);
 
-	$httpcode = curl_getinfo($postRequest, CURLINFO_HTTP_CODE);
-	if($httpcode==200) {
-		$result = json_decode($ret,true);
+		$result = json_decode($message,true);
 		echo "Object received.\n";
 		# Get Post Request From mid-end
 		$input=file_get_contents("https://web.njit.edu/~jmb75/server.php");
@@ -47,9 +45,6 @@
 		$isValid=$json->{"isValid"};
 
 		echo $isValid . "<br>";
-	} else {
-		echo "ERROR\n";
-	}
 
 	curl_close($postRequest);
 
