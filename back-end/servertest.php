@@ -74,7 +74,7 @@
 	*/
 	$jsonDataResult=$json["isValid"];
 
-	echo "Response: isValid : " . $jsonDataResult;
+	echo "Response: isValid : " . $jsonDataResult . "\n";
 
 	//// END Collect JSON Response ////
 ?> 
