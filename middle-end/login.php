@@ -1,62 +1,74 @@
 <?php
 
-
   #Get Post Request From Frontend
-  /*
-  $input=file_get_contents('php://input');
-  $json=json_decode($input);
-  */
-  $username="username";//$json["login"]["username"];
-  $password="password";//$json["login"]["password"];
 
-  $jsonData = array();
-	$jsonData["username"] = "username";
-	$jsonData["password"] = "password";
-	//echo $jsonData["username"] . "\n";
-	//echo $jsonData["password"] . "\n";
-	// Encode the array into JSON.
-	$input = json_encode($jsonData);
+  $input = file_get_contents('php://input');
+  $json  = json_decode($input);
 
+  $username = $json -> {"username"};
+  $password = $json -> {"password"};
 
   #Check Against NJIT's login via Post
 
-  $URL = "https://aevitepr2.njit.edu/myhousing/login.cfm";
-  $ch = curl_init();
-  curl_setopt($ch, CURLOPT_URL, $URL);
-  curl_setopt($ch, CURLOPT_POST, 1);
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-  curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-  $fields= array(
+  $fields = array(
     "ucid" => $username,
     "pass" => $password
   );
-  curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($fields));
 
-  $result = curl_exec ($ch);
-  //echo $result;
+  $njitPost = curl("https://aevitepr2.njit.edu/myhousing/login.cfm", $fields, "");
+
+  $njitLogin = False;
+  if(pageTitle($njitPost) == "Please Select a System to Sign Into") {
+    $njitLogin = True;
+  }
 
   #Check Against BackEnd's DB via Post
-  $dbPost=curl("https://web.njit.edu/~jmb75/server.php", $input);
 
-
-  #TO-DO enrich dbPost with NJIT POST
+  $dbPost = curl("https://web.njit.edu/~jmb75/server.php", $input, "db");
+  $valid = json_decode($dbPost);
+  $dbResult = $valid -> isValid;
 
   #Send Results Back to Frontend via Post
-  echo $dbPost;
+
+  $response = array(
+    "njitLogin" => $njitLogin,
+    "dbLogin"   => $dbResult
+  );
+
+  $response = json_encode($response);
+
+  echo $response;
 
 
   #Helper Functions
-  function curl($url, $content) {
-    $postRequest=curl_init($url);
-    curl_setopt($postRequest, CURLOPT_POST, 1);
-    curl_setopt($postRequest, CURLOPT_POSTFIELDS, $content);
-    curl_setopt($postRequest, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($postRequest, CURLOPT_HTTPHEADER, array(
-      'Content-Type: application/json'
-    ));
+  function curl($url, $content, $type) {
+    $postRequest = curl_init($url);
+
+    curl_setopt($postRequest, CURLOPT_POST, True);
+    curl_setopt($postRequest, CURLOPT_RETURNTRANSFER, True);
+    curl_setopt($postRequest, CURLOPT_FOLLOWLOCATION, True);
+
+    if ($type == "db") {
+      curl_setopt($postRequest, CURLOPT_HTTPHEADER, array(
+        'Content-Type: application/json'
+      ));
+      curl_setopt($postRequest, CURLOPT_POSTFIELDS, $content);
+
+    } else {
+      curl_setopt($postRequest, CURLOPT_POSTFIELDS, http_build_query($content));
+    }
+
     $result = curl_exec($postRequest);
     curl_close($postRequest);
+
     return $result;
+  }
+
+  function pageTitle($html) {
+
+    preg_match('/<TITLE>(.*?)<\/TITLE>/', $html, $matches);
+    return $matches[1];
+
   }
 
 ?>
