@@ -26,6 +26,6 @@ EOD");
     "result"  => $result
   );
 
-  print_r(array_values($response));
+  echo json_encode($response);
 
 ?>
