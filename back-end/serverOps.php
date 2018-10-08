@@ -25,9 +25,9 @@
 		getQuestions($conn);
 	} elseif($operID == '2') {
 		addQuestion($conn, $data);
-	} /*elseif($operID == '3') {
+	} elseif($operID == '3') {
 		addExam($conn, $data);
-	} elseif($operID == '4') {
+	} /*elseif($operID == '4') {
 		getExam($conn, $data);
 	} elseif($operID == '5') {
 		submitExam($conn, $data);
@@ -37,6 +37,43 @@
 
 	// Close DB connection
 	$conn->close();
+
+	/*function getExam($conn, $data) {
+		// Query DB
+		$sql = "SELECT * FROM `EXAM` WHERE EID = '".$data."'";
+		$result = $conn->query($sql);
+
+		$response = array();
+
+		// Check resulting records and read.
+		if ($result->num_rows > 0) {
+		    // Output each return row
+		    $row = $result->fetch_assoc();
+	        
+		} else {
+			$response = null;
+		}
+		
+		// Respond with JSON object
+		$json_response = json_encode($response);
+		echo $json_response;
+	}*/
+
+	function addExam($conn, $data) {
+		
+		// Query DB
+		//INSERT INTO `EXAM`(`Questions`, `AnsKey`, `OpenTime`, `EndTime`) VALUES ('{"1","2","3"}','{"1", "2", "1"}',1539022862722,1545368400000)
+		$sql = "INSERT INTO `EXAM`(`Questions`, `AnsKey`, `OpenTime`, `EndTime`) VALUES ".$data;
+		if($conn->query($sql)) {
+			$response["success"] = "true";
+		} else {
+			$response["success"] = "false";
+		}
+		
+		// Respond with JSON object
+		$json_response = json_encode($response);
+		echo $json_response;
+	}
 
 	function addQuestion($conn, $data) {
 		
