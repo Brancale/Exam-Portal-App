@@ -31,12 +31,49 @@
 		getExam($conn, $data);
 	} elseif($operID == '5') {
 		submitExam($conn, $data);
-	} elseif($operID == '6') {
-		getExams($conn, $data);
-	}*/
+	} */elseif($operID == '6') {
+		getAllExams($conn, $data);
+	} else {
+		$response["success"] = "invalid input option";
+		
+		// Respond with JSON object
+		$json_response = json_encode($response);
+		echo $json_response;
+	}
 
 	// Close DB connection
 	$conn->close();
+
+	function getAllExams($conn) {
+		// Query DB
+		$sql = "SELECT * FROM `EXAM`";
+		$result = $conn->query($sql);
+
+		$response = array();
+
+		$count = 0;
+
+		// Check resulting records and read.
+		if ($result->num_rows > 0) {
+		    $response["success"] = "true";
+		    // Output each return row
+		    while($row = $result->fetch_assoc()) {
+		        /*(`Questions`, `AnsKey`, `OpenTime`, `EndTime`)*/
+		        $response[$count] = array(
+                        'EID'=>$row['EID'],
+                        'OpenTime'=>$row['OpenTime'],
+                        'EndTime'=>$row['EndTime']
+                                );
+		        $count = $count + 1;
+		    }
+		} else {
+			$response["success"] = "false";
+		}
+		
+		// Respond with JSON object
+		$json_response = json_encode($response);
+		echo $json_response;
+	}
 
 	/*function getExam($conn, $data) {
 		// Query DB
@@ -47,11 +84,12 @@
 
 		// Check resulting records and read.
 		if ($result->num_rows > 0) {
+		    $response["success"] = "true";
 		    // Output each return row
 		    $row = $result->fetch_assoc();
-	        
+
 		} else {
-			$response = null;
+			$response["success"] = "false";
 		}
 		
 		// Respond with JSON object
@@ -105,6 +143,7 @@
 
 		// Check resulting records and read.
 		if ($result->num_rows > 0) {
+		    $response["success"] = "true";
 		    // Output each return row
 		    while($row = $result->fetch_assoc()) {
 		        /*echo "QID: " . $row["QID"]. "; Question: " . $row["Question"]. "; Answer: " . $row["Answer"]. "; Subject: " . $row["Subject"]. "; Difficulty: " . $row["Difficulty"]. "; QType: " . $row["QType"]. "; AnsID: " . $row["AnsID"]. "\n";*/
@@ -115,10 +154,12 @@
                         'Subject'=>$row['Subject'],
                         'Difficulty'=>$row['Difficulty'],
                         'QType'=>$row['QType'],
-                        'AnsID'=>$row['AnsID'],
+                        'AnsID'=>$row['AnsID']
                                 );
 		        $count = $count + 1;
 		    }
+		} else {
+			$response["success"] = "false";
 		}
 		
 		// Respond with JSON object
