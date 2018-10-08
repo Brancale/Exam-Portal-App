@@ -12,7 +12,7 @@
 
 	// Test JSON for adding an Exam
 	$jsonData["operationID"] = '3';
-	$jsonData["data"] = "('{\"1\",\"2\"}','{\"1\", \"2\"}',1543640400000,1545368400000)";
+	$jsonData["data"] = "('1;2','1;2',1543640400000,1545368400000)";
 
 	// Encode the array into JSON.
 	$jsonDataEncoded = json_encode($jsonData);
