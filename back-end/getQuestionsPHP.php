@@ -55,8 +55,8 @@
 	$json = json_decode($result,true);
 	echo "\nObject received.\n";
 
-	//$json_string = json_encode($json, JSON_PRETTY_PRINT);
-	print($json);
+	$json_string = json_encode($json, JSON_PRETTY_PRINT);
+	print($json_string);
 
 	//// END Collect JSON Response ////
 ?> 
