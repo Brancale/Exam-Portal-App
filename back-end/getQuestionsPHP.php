@@ -54,19 +54,6 @@
 
 	$json = json_decode($result,true);
 	echo "\nObject received.\n";
-	/*// Iterate through JSON results
-	$jsonIterator = new RecursiveIteratorIterator(
-    new RecursiveArrayIterator(json_decode($result, TRUE)),
-    RecursiveIteratorIterator::SELF_FIRST);
-
-	foreach ($jsonIterator as $key => $val) {
-	    if(is_array($val)) {
-	        echo "$key:\n";
-	    } else {
-	        echo "$key => $val\n";
-	    }
-	}
-	*/
 
 	//$json_string = json_encode($json, JSON_PRETTY_PRINT);
 	print($json);
