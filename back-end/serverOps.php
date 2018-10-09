@@ -27,9 +27,9 @@
 		addQuestion($conn, $data);
 	} elseif($operID == '3') {
 		addExam($conn, $data);
-	} /*elseif($operID == '4') {
+	} elseif($operID == '4') {
 		getExam($conn, $data);
-	} elseif($operID == '5') {
+	} /*elseif($operID == '5') {
 		submitExam($conn, $data);
 	} */elseif($operID == '6') {
 		getAllExams($conn, $data);
@@ -62,7 +62,8 @@
 		        $response[$count] = array(
                         'EID'=>$row['EID'],
                         'OpenTime'=>$row['OpenTime'],
-                        'EndTime'=>$row['EndTime']
+                        'EndTime'=>$row['EndTime'],
+                        'Points'=>$row['Points']
                                 );
 		        $count = $count + 1;
 		    }
@@ -75,7 +76,7 @@
 		echo $json_response;
 	}
 
-	/*function getExam($conn, $data) {
+	function getExam($conn, $data) {
 		// Query DB
 		$sql = "SELECT * FROM `EXAM` WHERE EID = '".$data."'";
 		$result = $conn->query($sql);
@@ -88,6 +89,10 @@
 		    // Output each return row
 		    $row = $result->fetch_assoc();
 
+		    /*(`Questions`, `AnsKey`, `OpenTime`, `EndTime`)*/
+            $examID = $row['EID'];
+            $questionArr = $row['OpenTime'];
+	        
 		} else {
 			$response["success"] = "false";
 		}
@@ -95,13 +100,13 @@
 		// Respond with JSON object
 		$json_response = json_encode($response);
 		echo $json_response;
-	}*/
+	}
 
 	function addExam($conn, $data) {
 		
 		// Query DB
-		//INSERT INTO `EXAM`(`Questions`, `AnsKey`, `OpenTime`, `EndTime`) VALUES ('{"1","2","3"}','{"1", "2", "1"}',1539022862722,1545368400000)
-		$sql = "INSERT INTO `EXAM`(`Questions`, `AnsKey`, `OpenTime`, `EndTime`) VALUES ".$data;
+		//INSERT INTO `EXAM`(`Questions`, `AnsKey`, `OpenTime`, `EndTime`) VALUES ('{"1","2","3"}','{"1", "2", "1"}',1539022862722,1545368400000, 100)
+		$sql = "INSERT INTO `EXAM`(`Questions`, `AnsKey`, `OpenTime`, `EndTime`, `Points`) VALUES ".$data;
 		if($conn->query($sql)) {
 			$response["success"] = "true";
 		} else {
@@ -116,7 +121,7 @@
 	function addQuestion($conn, $data) {
 		
 		// Query DB
-		$sql = "INSERT INTO `QUESTIONS`(`Question`, `Answer`, `Subject`, `Difficulty`, `QType`, `AnsID`) VALUES ".$data;
+		$sql = "INSERT INTO `QUESTIONS`(`Question`, `Answer`, `Subject`, `Difficulty`, `QType`, `AnsID`, `Points`) VALUES ".$data;
 		if($conn->query($sql)) {
 			$response["success"] = "true";
 		} else {
@@ -131,7 +136,7 @@
 	function getQuestions($conn) {
 		/*
 		 * Sample
-		  INSERT INTO `QUESTIONS`(`Question`, `Answer`, `Subject`, `Difficulty`, `QType`, `AnsID`) VALUES ('What is the running time in the best case of Insertion Sort?', '{"O(1)","O(n)","O(n^2)","O(n^3)"}', 'CS610', 2, 1, 1)
+		  INSERT INTO `QUESTIONS`(`Question`, `Answer`, `Subject`, `Difficulty`, `QType`, `AnsID`) VALUES ('What is the running time in the best case of Insertion Sort?', '{"O(1)","O(n)","O(n^2)","O(n^3)"}', 'CS610', 2, 1, 1, 20)
 		 */
 		// Query DB
 		$sql = "SELECT * FROM `QUESTIONS`";
@@ -154,7 +159,8 @@
                         'Subject'=>$row['Subject'],
                         'Difficulty'=>$row['Difficulty'],
                         'QType'=>$row['QType'],
-                        'AnsID'=>$row['AnsID']
+                        'AnsID'=>$row['AnsID'],
+                        'Points'=>$row['Points']
                                 );
 		        $count = $count + 1;
 		    }
