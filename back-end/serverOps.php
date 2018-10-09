@@ -44,6 +44,11 @@
 	// Close DB connection
 	$conn->close();
 
+	function submitExam($conn, $data) {
+		// INSERT INTO `STUDENT`(`SExID`, `EID`, `SName`, `Answers`, `Score`, `Comments`) VALUES ([value-1],[value-2],[value-3],[value-4],[value-5],[value-6])
+		
+	}
+
 	function getAllExams($conn) {
 		// Query DB
 		$sql = "SELECT * FROM `EXAM`";
@@ -113,8 +118,6 @@
 	                        'Answer'=>$rowQ['Answer'],
 	                        'Subject'=>$rowQ['Subject'],
 	                        'Difficulty'=>$rowQ['Difficulty'],
-	                        'QType'=>$rowQ['QType'],
-	                        'AnsID'=>$rowQ['AnsID'],
 	                        'Points'=>$rowQ['Points']
 	                                );
 			        $count = $count + 1;
@@ -185,8 +188,6 @@
                         'Answer'=>$row['Answer'],
                         'Subject'=>$row['Subject'],
                         'Difficulty'=>$row['Difficulty'],
-                        'QType'=>$row['QType'],
-                        'AnsID'=>$row['AnsID'],
                         'Points'=>$row['Points']
                                 );
 		        $count = $count + 1;
@@ -199,23 +200,4 @@
 		$json_response = json_encode($response);
 		echo $json_response;
 	}
-
-	/*$response = array();
-
-	// If records found, compare password to hash and set isValid flag
-	if ($recordFound == 1) {
-		if (md5($userpwd) === $hash) {
-		    //echo "Password matches\n";
-		    //The JSON data.
-			$response["isValid"] = "true";
-		} else {
-			$response["isValid"] = "false";
-		}
-	} else {
-		$response["isValid"] = "false";
-	}
-
-	// Respond with JSON object
-	$json_response = json_encode($response);
-	echo $json_response;*/
 ?> 
