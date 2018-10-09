@@ -91,8 +91,35 @@
 
 		    /*(`Questions`, `AnsKey`, `OpenTime`, `EndTime`)*/
             $examID = $row['EID'];
-            $questionArr = $row['OpenTime'];
-	        
+            $questionArr = $row['Questions'];
+	        $questionIDs = preg_split("/;/", $questionArr);
+
+	        //$response["questionList"] = $questionArr;
+	        //$response["questionIDs"] = $questionIDs;
+
+	        $count = 0;
+
+	        foreach ($questionIDs as $questid => $value) {
+			    //$response["value".$count] = $value;
+			    // query for $value in QUESTIONS table
+				$sqlQ = "SELECT * FROM `QUESTIONS` WHERE QID = '".$value."'";
+				$resultQ = $conn->query($sqlQ);
+				if ($resultQ->num_rows > 0) {
+					$rowQ = $resultQ->fetch_assoc();
+
+					$response[$count] = array(
+	                        'QID'=>$rowQ['QID'],
+	                        'Question'=>$rowQ['Question'],
+	                        'Answer'=>$rowQ['Answer'],
+	                        'Subject'=>$rowQ['Subject'],
+	                        'Difficulty'=>$rowQ['Difficulty'],
+	                        'QType'=>$rowQ['QType'],
+	                        'AnsID'=>$rowQ['AnsID'],
+	                        'Points'=>$rowQ['Points']
+	                                );
+			        $count = $count + 1;
+			    }
+			}
 		} else {
 			$response["success"] = "false";
 		}
