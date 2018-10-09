@@ -151,7 +151,7 @@
 	function addQuestion($conn, $data) {
 		
 		// Query DB
-		$sql = "INSERT INTO `QUESTIONS`(`Question`, `Answer`, `Subject`, `Difficulty`, `QType`, `AnsID`, `Points`) VALUES ".$data;
+		$sql = "INSERT INTO `QUESTIONS`(`Question`, `Answer`, `Subject`, `Difficulty`, `Points`) VALUES ".$data;
 		if($conn->query($sql)) {
 			$response["success"] = "true";
 		} else {
