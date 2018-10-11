@@ -3,15 +3,18 @@
   $input = file_get_contents('php://input');
   $json  = json_decode($input);
 
-  $problem = $json -> {"problem"};
+  $problem  = $json -> {"studentAnswer"};
+  $answer   = $json -> {"actualAnswer"};
+  $testCase = $json -> {"autoGrade"};
 
-  $answer  = $json -> {"answer"};
   $correct = "False";
+
+  $problem =  $problem . "\n\nif __name__ == \"__main__\":\n\tprint(" . $testCase . ", end='')";
 
   error_reporting(E_ALL);
   ini_set("display_errors", 1);
 
-  $result = shell_exec("python 2>&1 - <<EOD
+  $result = shell_exec("/afs/cad/sw.common/bin/python3 2>&1 - <<EOD
 $problem
 
 EOD");
