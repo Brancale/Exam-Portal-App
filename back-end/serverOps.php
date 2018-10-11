@@ -5,8 +5,8 @@
 	# Get Post Request From mid-end
 	$input=file_get_contents('php://input');
 	$json=json_decode($input);
-	$operID=$json->{"operationID"};
-	$data=$json->{"data"};
+	$operID=(string)$json->{"operationID"};
+	$data=(string)$json->{"data"};
 
 	// SQL Credentials
 	$servername = "sql2.njit.edu";
@@ -46,7 +46,7 @@
 
 	function submitExam($conn, $data) {
 		// INSERT INTO `STUDENT`(`SExID`, `EID`, `SName`, `Answers`, `Score`, `Comments`) VALUES ([value-1],[value-2],[value-3],[value-4],[value-5],[value-6])
-		
+		//studentAnswer, autograde, actualAnswer
 	}
 
 	function getAllExams($conn) {
@@ -64,7 +64,7 @@
 		    // Output each return row
 		    while($row = $result->fetch_assoc()) {
 		        /*(`Questions`, `AnsKey`, `OpenTime`, `EndTime`)*/
-		        $response[$count] = array(
+		        $response['obj'.$count] = array(
                         'EID'=>$row['EID'],
                         'OpenTime'=>$row['OpenTime'],
                         'EndTime'=>$row['EndTime'],
@@ -112,10 +112,9 @@
 				if ($resultQ->num_rows > 0) {
 					$rowQ = $resultQ->fetch_assoc();
 
-					$response[$count] = array(
+					$response['obj'.$count] = array(
 	                        'QID'=>$rowQ['QID'],
 	                        'Question'=>$rowQ['Question'],
-	                        'Answer'=>$rowQ['Answer'],
 	                        'Subject'=>$rowQ['Subject'],
 	                        'Difficulty'=>$rowQ['Difficulty'],
 	                        'Points'=>$rowQ['Points']
@@ -151,7 +150,7 @@
 	function addQuestion($conn, $data) {
 		
 		// Query DB
-		$sql = "INSERT INTO `QUESTIONS`(`Question`, `Answer`, `Subject`, `Difficulty`, `Points`) VALUES ".$data;
+		$sql = "INSERT INTO `QUESTIONS`(`Question`, `Answer`, `Subject`, `Difficulty`, `Points`, `Autograde`) VALUES ".$data;
 		if($conn->query($sql)) {
 			$response["success"] = "true";
 		} else {
@@ -182,13 +181,14 @@
 		    // Output each return row
 		    while($row = $result->fetch_assoc()) {
 		        /*echo "QID: " . $row["QID"]. "; Question: " . $row["Question"]. "; Answer: " . $row["Answer"]. "; Subject: " . $row["Subject"]. "; Difficulty: " . $row["Difficulty"]. "; QType: " . $row["QType"]. "; AnsID: " . $row["AnsID"]. "\n";*/
-		        $response[$count] = array(
+		        $response['obj'.$count] = array(
                         'QID'=>$row['QID'],
                         'Question'=>$row['Question'],
                         'Answer'=>$row['Answer'],
                         'Subject'=>$row['Subject'],
                         'Difficulty'=>$row['Difficulty'],
-                        'Points'=>$row['Points']
+                        'Points'=>$row['Points'],
+                        'Autograde'=>$row['Autograde']
                                 );
 		        $count = $count + 1;
 		    }
