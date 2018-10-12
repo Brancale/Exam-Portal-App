@@ -54,6 +54,7 @@
 
 	//$json_string = json_encode($json, JSON_PRETTY_PRINT);
 	print($json["success"]);
+	print($json["test"]);
 
 	//// END Collect JSON Response ////
 ?> 
