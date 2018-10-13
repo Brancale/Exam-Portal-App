@@ -12,7 +12,7 @@
 
 	// Test JSON for adding an Exam
 	$jsonData["operationID"] = '3';
-	// Data format: semicolon separated Question IDs, semicolon separated answers, Open time in milliseconds, close time
+	// Data format: delimeter separated Question IDs, semicolon separated answers, Open time in milliseconds, close time
 	$jsonData["data"] = "('1|*|2','Hello World!|*|1 1 2 3 5',1543640400000,1545368400000)";
 
 	// Encode the array into JSON.
