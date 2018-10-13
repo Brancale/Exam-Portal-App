@@ -14,8 +14,8 @@
 	$jsonData["operationID"] = 5;
 
 	// Values needed
-	$jsonData["EID"] = 2;
-	$jsonData["SName"] = pr327;
+	$jsonData["EID"] = "2";
+	$jsonData["SName"] = "sh424";
 	// Answers must be an array of correct answers
 	$jsonData["Answers"] = "True|*|12";
 

@@ -55,7 +55,7 @@
 	// Close DB connection
 	$conn->close();
 
-	function addComments($conn, $data) {
+	function addComments($conn, $json) {
 		$SexamID=(string)$json->{"SExamID"};
 		$instComments=(string)$json->{"Comments"};
 
@@ -114,7 +114,7 @@
 		echo $json_response;
 	}
 
-	function getStudentExam($conn, $data) {
+	function getStudentExam($conn, $json) {
 		$SexamID=(string)$json->{"SExamID"};
 		// Query DB
 		$sql = "SELECT * FROM `STUDENT` WHERE SExamID = '".$SexamID."'";
@@ -148,30 +148,16 @@
 		$username=(string)$json->{"SName"};
 		$studentAns=$json->{"Answers"};
 
-		$ansString = '';
-		$firstInsert = "true";
-
-		foreach ($studentAns as $sAns) {
-			if ($firstInsert == "true") {
-				$ansString = '\"'.$sAns.'\"';
-				$firstInsert = "false";
-			} else {
-				$ansString = $ansString.';\"'.$sAns.'\"';
-			}
-			
-		}
-
-		$ansString = rtrim($ansString,"; ");
-
 		// Query DB
-		$sql = "INSERT INTO `STUDENT`(`EID`, `SName`, `Answers`) VALUES ('".$examID."','".$username."','".$ansString."')";
+		$sql = "INSERT INTO `STUDENT`(`EID`, `SName`, `Answers`) VALUES ('".$examID."','".$username."','".$studentAns."')";
 		if($conn->query($sql)) {
 			$response["success"] = "true";
+			$response["EID"] = $examID;
+			$response["SName"] = $username;
+			$response["Answers"] = $studentAns;
 		} else {
 			$response["success"] = "false";
 		}
-		
-		$response["test"] = $sql;
 
 		// Respond with JSON object
 		$json_response = json_encode($response);
@@ -182,6 +168,7 @@
 		$response["success"] = "false";
 
 		$SexamID=(string)$json->{"SExamID"};
+		$examID = '';
 		$studentAns=array();
 
 		$response["test"] = $SexamID;
@@ -190,7 +177,8 @@
 		$resultQ = $conn->query($sqlQ);
 		if ($resultQ->num_rows > 0) {
 			$rowQ = $resultQ->fetch_assoc();
-			$studentAns = explode(";", $rowQ['Answers']);
+			$studentAns = explode("|*|", $rowQ['Answers']);
+			$examID = $rowQ['EID'];
 	    }
 
 	    $response["test"] = 1;
@@ -208,13 +196,11 @@
 		$resultQ = $conn->query($sqlQ);
 		if ($resultQ->num_rows > 0) {
 			$rowQ = $resultQ->fetch_assoc();
-			$qidArr = explode(";", $rowQ['QID']);
+			$qidArr = explode("|*|", $rowQ['Questions']);
 	    }
 
-	    $response["test"] = 2;
-
-	    foreach ($qidArr as $qid) {
-		    $sqlQ = "SELECT * FROM `QUESTIONS` WHERE QID = '".$qid."'";
+	    foreach ($qidArr as $qidA) {
+		    $sqlQ = "SELECT * FROM `QUESTIONS` WHERE QID = '".$qidA."'";
 			$resultQ = $conn->query($sqlQ);
 			
 			if ($resultQ->num_rows > 0) {
@@ -229,8 +215,6 @@
 		    }
 
 		}
-
-		$response["test"] = 3;
 
 	    $count = 0;
 
@@ -257,8 +241,8 @@
 			// Execute the request
 			$result = curl_exec($postRequest);
 			curl_close($postRequest);
-			$json = json_decode($result,true);
-			$isCorrect = $json["correct"];
+			$jsonA = json_decode($result,true);
+			$isCorrect = $jsonA["correct"];
 
 			if ($isCorrect == "True") {
 				$stdPts = $stdPts + $pointsArr[$count];
@@ -267,16 +251,14 @@
 			$count = $count + 1;
 		}
 
-		$response["test"] = 4;
-
-		$scoreVal = $stdPts / $totalPts;
-		$response["score"] = $scoreVal;
+		$scoreVal = (double)$stdPts / (double)$totalPts;
+		$response["score"] = $scoreVal * 100.0;
 
 		$sqlQ = "UPDATE `STUDENT` SET `Score` = ".$scoreVal." WHERE `SExamID` = ".$SexamID;
 		if($conn->query($sqlQ)) {
 			$response["success"] = "true";
 		}
-		
+
 		// Respond with JSON object
 		$json_response = json_encode($response);
 		echo $json_response;
@@ -330,7 +312,7 @@
 		    /*(`Questions`, `AnsKey`, `OpenTime`, `EndTime`)*/
             $examID = $row['EID'];
             $questionArr = $row['Questions'];
-	        $questionIDs = explode(";", $questionArr);
+	        $questionIDs = explode("|*|", $questionArr);
 
 	        //$response["questionList"] = $questionArr;
 	        //$response["questionIDs"] = $questionIDs;
@@ -366,7 +348,7 @@
 	function addExam($conn, $data) {
 		
 		// Query DB
-		//INSERT INTO `EXAM`(`Questions`, `AnsKey`, `OpenTime`, `EndTime`, `Points`) VALUES ('1;2','\"Hello World!\";\"1 1 2 3 5\"',1543640400000,1545368400000)
+		//INSERT INTO `EXAM`(`Questions`, `AnsKey`, `OpenTime`, `EndTime`, `Points`) VALUES ('1|*|2','Hello World!|*|1 1 2 3 5',1543640400000,1545368400000)
 		$sql = "INSERT INTO `EXAM`(`Questions`, `AnsKey`, `OpenTime`, `EndTime`) VALUES ".$data;
 		if($conn->query($sql)) {
 			$response["success"] = "true";
