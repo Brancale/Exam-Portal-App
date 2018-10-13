@@ -10,38 +10,46 @@
  	echo "Creating JSON object\n";
 	$jsonData = array();
 
-	// Test JSON for adding a question
-	$jsonData["operationID"] = '2';
-	// Data format: (Question Prompt, Question Answer, Subject, Difficulty, Points, Autograde value)
-	$jsonData["data"] = "('Test Question', 'Test Answer', 'Course', 1, 100, 'Test Autograde item')";
+	// Test JSON for adding an Exam
+	$jsonData["operationID"] = '7';
+	$jsonData["SExamID"] = '1';
 
 	// Encode the array into JSON.
 	$jsonDataEncoded = json_encode($jsonData);
+	// Initialize cURL
 	$postRequest = curl_init();
-	$url = "https://web.njit.edu/~jmb75/serverOps.php";
-	curl_setopt($postRequest, CURLOPT_POST, true);
+	// Initialize URL
+	$url = "https://web.njit.edu/~jmb75/serverOps.php";	 
+	// Specify post request in curl (CURLOPT_POST)
+	curl_setopt($postRequest, CURLOPT_POST, true);	 
+	// Attach encoded JSON string to POST fields
 	curl_setopt($postRequest, CURLOPT_POSTFIELDS, $jsonDataEncoded);
 	curl_setopt($postRequest, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
+	// Set URL to send to
 	curl_setopt($postRequest, CURLOPT_URL, $url);
+	// Print cURL statistics
 	curl_setopt($postRequest, CURLOPT_VERBOSE, true);
-	curl_setopt($postRequest, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($postRequest, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+	// Expect return value to store in $result
+	curl_setopt($postRequest, CURLOPT_RETURNTRANSFER, true);	
+	// Set Content-Type to application/json and Content-Length to length of content.
+    curl_setopt($postRequest, CURLOPT_HTTPHEADER, array(
+      'Content-Type: application/json')
+    );
+	 
 	echo "Sending JSON obj to server...\n";
 	// Execute the request
 	$result = curl_exec($postRequest);
 	curl_close($postRequest);
+
 	//// END Perform cURL post request to DB server ////
 
 	//// START Collect JSON Response ////
 	$json = json_decode($result,true);
 	echo "\nObject received.\n";
 
-	//$json_string = json_encode($json, JSON_PRETTY_PRINT);
-	if ($json["success"] == "true") {
-		print("Your question was successfully added to DB!");
-	} else {
-		print("ERROR: Your question was not formatted properly");
-	}
+	// See if submission succeeded
+	$json_string = json_encode($json, JSON_PRETTY_PRINT);
+	print($json_string);
 
 	//// END Collect JSON Response ////
 ?> 
