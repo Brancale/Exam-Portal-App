@@ -17,7 +17,7 @@
 	$jsonData["EID"] = 2;
 	$jsonData["SName"] = pr327;
 	// Answers must be an array of correct answers
-	$jsonData["Answers"] = array("True","12");
+	$jsonData["Answers"] = "True|*|12";
 
 	// Encode the array into JSON.
 	$jsonDataEncoded = json_encode($jsonData);
