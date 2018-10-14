@@ -10,6 +10,9 @@
   $jsonData["username"] = $userid;
   $jsonData["password"] = $userpwd;
 
+  session_start();
+  $_SESSION["username"] = $userid;
+
   $jsonData = json_encode($jsonData);
   $ch = curl_init('https://web.njit.edu/~sh424/login.php');
   curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
@@ -23,11 +26,12 @@
   $result = curl_exec($ch);
   $json = json_decode($result);
   if($json->{"dbLogin"} == "true"){
-    echo "dbsuccess";
+    $dat = array();
+    $dat[0]="dbsuccess";
+    $dat[1]=$json->{"type"};
+    echo json_encode($dat);
   }
-  elseif($json->{"njitLogin"} == "true"){
-    echo "njitsuccess";
-  }
+
   else{
     echo "error";
   }
