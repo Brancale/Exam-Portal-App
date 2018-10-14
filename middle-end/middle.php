@@ -3,31 +3,11 @@
   #Get Post Request From Frontend
 
   $input = file_get_contents('php://input');
-  $json  = json_decode($input);
 
-  $username = $json -> {"username"};
-  $password = $json -> {"password"};
-  $type = $json -> {"type"};
+  $dbPost = curl("https://web.njit.edu/~jmb75/serverOps.php", $input);
 
+  echo $dbPost;
 
-  #Check Against BackEnd's DB via Post
-
-  $dbPost = curl("https://web.njit.edu/~jmb75/server.php", $input);
-  $valid = json_decode($dbPost);
-  $dbResult = $valid -> isValid;
-
-  #Send Results Back to Frontend via Post
-
-  $response = array(
-    "dbLogin"   => $dbResult
-  );
-
-  $response = json_encode($response);
-
-  echo $response;
-
-
-  #Helper Functions
   function curl($url, $content) {
     $postRequest = curl_init($url);
 
