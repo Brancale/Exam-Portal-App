@@ -7,19 +7,18 @@
 
   $username = $json -> {"username"};
   $password = $json -> {"password"};
-  $type = $json -> {"type"};
-
 
   #Check Against BackEnd's DB via Post
 
   $dbPost = curl("https://web.njit.edu/~jmb75/server.php", $input);
   $valid = json_decode($dbPost);
   $dbResult = $valid -> isValid;
-
+  $type = $valid -> {"type"};
   #Send Results Back to Frontend via Post
 
   $response = array(
-    "dbLogin"   => $dbResult
+    "dbLogin"   => $dbResult,
+    "type" => $type;
   );
 
   $response = json_encode($response);
