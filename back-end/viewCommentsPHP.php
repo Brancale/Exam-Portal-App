@@ -1,9 +1,7 @@
  <?php
  	/*
  	 * Created by James Brancale
- 	 * 9/9/2018
  	 * CS490 - Tier 3 - Server/Backend
- 	 * Server test code
  	 */
 
  	//// START Perform cURL post request to DB server ////
@@ -11,11 +9,10 @@
  	// Create JSON object to send, with username and password to query DB
  	echo "Creating JSON object\n";
 	$jsonData = array();
-	$jsonData["username"] = "student";
-	$jsonData["password"] = "cs490";
 
-	//echo $jsonData["username"] . "\n";
-	//echo $jsonData["password"] . "\n";
+	// Option to get Comments for SExamID 1
+	$jsonData["operationID"] = '11';
+	$jsonData["data"] = "1";
 
 	// Encode the array into JSON.
 	$jsonDataEncoded = json_encode($jsonData);
@@ -24,7 +21,7 @@
 	$postRequest = curl_init();
 
 	// Initialize URL
-	$url = "https://web.njit.edu/~jmb75/server.php";
+	$url = "https://web.njit.edu/~jmb75/serverOps.php";
 	 
 	// Specify post request in curl (CURLOPT_POST)
 	curl_setopt($postRequest, CURLOPT_POST, true);
@@ -58,23 +55,10 @@
 	//// START Collect JSON Response ////
 
 	$json = json_decode($result,true);
-	echo $result . "\nObject received.\n";
-	/*// Iterate through JSON results
-	$jsonIterator = new RecursiveIteratorIterator(
-    new RecursiveArrayIterator(json_decode($result, TRUE)),
-    RecursiveIteratorIterator::SELF_FIRST);
+	echo "\nObject received.\n";
 
-	foreach ($jsonIterator as $key => $val) {
-	    if(is_array($val)) {
-	        echo "$key:\n";
-	    } else {
-	        echo "$key => $val\n";
-	    }
-	}
-	*/
-	$jsonDataResult=$json["isValid"];
-
-	echo "Response: isValid : " . $jsonDataResult . " ".$json["type"]."\n";
+	$json_string = json_encode($json, JSON_PRETTY_PRINT);
+	print($json_string);
 
 	//// END Collect JSON Response ////
 ?> 
