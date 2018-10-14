@@ -10,10 +10,9 @@
  	echo "Creating JSON object\n";
 	$jsonData = array();
 
-	// Test JSON for adding an Exam
-	$jsonData["operationID"] = '3';
-	// Data format: delimeter separated Question IDs, Open time in milliseconds, close time
-	$jsonData["data"] = "('1',1540044000000,1540483200000)";
+	// Option to get Comments for SExamID 1
+	$jsonData["operationID"] = '11';
+	$jsonData["data"] = "1";
 
 	// Encode the array into JSON.
 	$jsonDataEncoded = json_encode($jsonData);
@@ -58,8 +57,8 @@
 	$json = json_decode($result,true);
 	echo "\nObject received.\n";
 
-	// See if submission succeeded
-	print($json["success"]);
+	$json_string = json_encode($json, JSON_PRETTY_PRINT);
+	print($json_string);
 
 	//// END Collect JSON Response ////
 ?> 
