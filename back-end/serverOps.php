@@ -34,8 +34,7 @@
 	} elseif($operID == '5') {
 		submitExam($conn, $json);
 	} elseif($operID == '6') {
-		$data=(string)$json->{"data"};
-		getAllExams($conn, $data);
+		getAllExams($conn);
 	} elseif($operID == '7') {
 		gradeExam($conn, $json);
 	} elseif($operID == '8') {
@@ -44,6 +43,9 @@
 		getStudentExam($conn, $json);
 	} elseif($operID == '10') {
 		addComments($conn, $json);
+	} elseif($operID == '11') {
+		$data=(string)$json->{"data"};
+		viewComments($conn, $data);
 	} else {
 		$response["success"] = "invalid input option";
 		
@@ -55,21 +57,41 @@
 	// Close DB connection
 	$conn->close();
 
+	function viewComments($conn, $data) {
+		$SexamID=(string)$data;
+
+		$response = array();
+
+		$sqlQ = "SELECT `Comments` FROM `STUDENT` WHERE `SExamID` = '".$SexamID."'";
+		if($result = $conn->query($sqlQ)) {
+			$response["success"] = "true";
+			if ($result->num_rows > 0) {
+				$row = $result->fetch_assoc();
+				$commentList = explode("|*|", $row['Comments']);
+
+		        $count = 0;
+
+		        foreach ($commentList as $comment) {
+					$response['obj'.$count] = $comment;
+			        $count = $count + 1;
+				}
+			}
+		} else {
+			$response["success"] = "false";
+		}
+		
+		// Respond with JSON object
+		$json_response = json_encode($response);
+		echo $json_response;
+	}
+
 	function addComments($conn, $json) {
 		$SexamID=(string)$json->{"SExamID"};
 		$instComments=(string)$json->{"Comments"};
 
-		$commentsStr = '';
-
-		foreach ($instComments as $instCom) {
-			$commentsStr = $commentsStr.';\"'.$instCom.'\"';
-		}
-
-		$commentsStr = rtrim($commentsStr,"; ");
-
 		$response = array();
 
-		$sqlQ = "UPDATE `STUDENT` SET `Comments` = ".$commentsStr." WHERE `SExamID` = ".$SexamID;
+		$sqlQ = "UPDATE `STUDENT` SET `Comments` = '".$instComments."' WHERE `SExamID` = '".$SexamID."'";
 		if($conn->query($sqlQ)) {
 			$response["success"] = "true";
 		} else {
@@ -82,7 +104,6 @@
 	}
 
 	function viewSubmittedExams($conn) {
-		//(`SExamID`, `EID`, `SName`, `Answers`, `Score`, `Comments`)
 
 		// Query DB
 		$sql = "SELECT * FROM `STUDENT`";
@@ -144,6 +165,7 @@
 	}
 
 	function submitExam($conn, $json) {
+		$operID=(string)$json->{"operationID"};
 		$examID=(string)$json->{"EID"};
 		$username=(string)$json->{"SName"};
 		$studentAns=$json->{"Answers"};
@@ -152,6 +174,7 @@
 		$sql = "INSERT INTO `STUDENT`(`EID`, `SName`, `Answers`) VALUES ('".$examID."','".$username."','".$studentAns."')";
 		if($conn->query($sql)) {
 			$response["success"] = "true";
+			$response["operationID"] = $operID;
 			$response["EID"] = $examID;
 			$response["SName"] = $username;
 			$response["Answers"] = $studentAns;
@@ -180,8 +203,6 @@
 			$studentAns = explode("|*|", $rowQ['Answers']);
 			$examID = $rowQ['EID'];
 	    }
-
-	    $response["test"] = 1;
 
 		$qidArr = array();
 		$actualAns = array();
@@ -251,8 +272,8 @@
 			$count = $count + 1;
 		}
 
-		$scoreVal = (double)$stdPts / (double)$totalPts;
-		$response["score"] = $scoreVal * 100.0;
+		$scoreVal = ((double)$stdPts / (double)$totalPts)  * 100.0;
+		$response["score"] = $scoreVal;
 
 		$sqlQ = "UPDATE `STUDENT` SET `Score` = ".$scoreVal." WHERE `SExamID` = ".$SexamID;
 		if($conn->query($sqlQ)) {
@@ -282,8 +303,7 @@
 		        $response['obj'.$count] = array(
                         'EID'=>$row['EID'],
                         'OpenTime'=>$row['OpenTime'],
-                        'EndTime'=>$row['EndTime'],
-                        'Points'=>$row['Points']
+                        'EndTime'=>$row['EndTime']
                                 );
 		        $count = $count + 1;
 		    }
@@ -308,20 +328,13 @@
 		    $response["success"] = "true";
 		    // Output each return row
 		    $row = $result->fetch_assoc();
-
-		    /*(`Questions`, `AnsKey`, `OpenTime`, `EndTime`)*/
             $examID = $row['EID'];
             $questionArr = $row['Questions'];
 	        $questionIDs = explode("|*|", $questionArr);
 
-	        //$response["questionList"] = $questionArr;
-	        //$response["questionIDs"] = $questionIDs;
-
 	        $count = 0;
 
 	        foreach ($questionIDs as $questid => $value) {
-			    //$response["value".$count] = $value;
-			    // query for $value in QUESTIONS table
 				$sqlQ = "SELECT * FROM `QUESTIONS` WHERE QID = '".$value."'";
 				$resultQ = $conn->query($sqlQ);
 				if ($resultQ->num_rows > 0) {
@@ -348,12 +361,12 @@
 	function addExam($conn, $data) {
 		
 		// Query DB
-		//INSERT INTO `EXAM`(`Questions`, `AnsKey`, `OpenTime`, `EndTime`, `Points`) VALUES ('1|*|2','Hello World!|*|1 1 2 3 5',1543640400000,1545368400000)
-		$sql = "INSERT INTO `EXAM`(`Questions`, `AnsKey`, `OpenTime`, `EndTime`) VALUES ".$data;
+		$sql = "INSERT INTO `EXAM`(`Questions`, `OpenTime`, `EndTime`) VALUES ".$data;
 		if($conn->query($sql)) {
 			$response["success"] = "true";
 		} else {
 			$response["success"] = "false";
+			$response["test"] = $sql;
 		}
 		
 		// Respond with JSON object
@@ -377,10 +390,6 @@
 	}
 
 	function getQuestions($conn) {
-		/*
-		 * Sample
-		  INSERT INTO `QUESTIONS`(`Question`, `Answer`, `Subject`, `Difficulty`, `QType`, `AnsID`) VALUES ('What is the running time in the best case of Insertion Sort?', '{"O(1)","O(n)","O(n^2)","O(n^3)"}', 'CS610', 2, 1, 1, 20)
-		 */
 		// Query DB
 		$sql = "SELECT * FROM `QUESTIONS`";
 		$result = $conn->query($sql);
@@ -394,7 +403,6 @@
 		    $response["success"] = "true";
 		    // Output each return row
 		    while($row = $result->fetch_assoc()) {
-		        /*echo "QID: " . $row["QID"]. "; Question: " . $row["Question"]. "; Answer: " . $row["Answer"]. "; Subject: " . $row["Subject"]. "; Difficulty: " . $row["Difficulty"]. "; QType: " . $row["QType"]. "; AnsID: " . $row["AnsID"]. "\n";*/
 		        $response['obj'.$count] = array(
                         'QID'=>$row['QID'],
                         'Question'=>$row['Question'],

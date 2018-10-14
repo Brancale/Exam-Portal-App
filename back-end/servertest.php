@@ -11,8 +11,8 @@
  	// Create JSON object to send, with username and password to query DB
  	echo "Creating JSON object\n";
 	$jsonData = array();
-	$jsonData["username"] = "username";
-	$jsonData["password"] = "password";
+	$jsonData["username"] = "student";
+	$jsonData["password"] = "cs490";
 
 	//echo $jsonData["username"] . "\n";
 	//echo $jsonData["password"] . "\n";
@@ -74,7 +74,7 @@
 	*/
 	$jsonDataResult=$json["isValid"];
 
-	echo "Response: isValid : " . $jsonDataResult . "\n";
+	echo "Response: isValid : " . $jsonDataResult . " ".$json["type"]."\n";
 
 	//// END Collect JSON Response ////
 ?> 
