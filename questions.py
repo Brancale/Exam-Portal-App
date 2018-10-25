@@ -56,5 +56,33 @@ def beginsWith(letter, sentence):
 print(beginsWith('t',['the','rain','in','spain','falls','mainly','on','the','plain']))
 
 
+def longestWord(sentence):
+    words = sentence.split()
+    max = 0
+    for word in words:
+        if len(word) > max:
+            max = len(word)
+    return max
+
+print(longestWord("the quick brown fox jumped over the lazy dog"))
+
+def longWords(sentence, cutoff):
+    words = sentence.split()
+    rtn = []
+    for word in words:
+        if len(word) > cutoff:
+            rtn.append(word)
+    return rtn
+
+
+def isOdd(number):
+    return number % 2 == 1
+
+print(isOdd(3))
+
+def isPalindrome(word):
+    return word == word[::-1]
+
+print(isPalindrome("racecar"))
 
 
