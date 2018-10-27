@@ -18,7 +18,7 @@
 
   $response = array(
     "dbLogin"   => $dbResult,
-    "type" => $type;
+    "type" => $type
   );
 
   $response = json_encode($response);
