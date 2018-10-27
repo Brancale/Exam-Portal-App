@@ -9,16 +9,17 @@
   $constraints = $json -> {"constraints"};       //Array of Constraints
   $points      = $json -> {"points"};            //Points per question
 
-  $testCasePoints   = intval($points) * 3/4;
-  $constraintPoints = intval($points) * 1/4;
+  $points = intval($points);
+  $testCasePoints   = $points * 3/4;
+  $constraintPoints = $points * 1/4;
 
   $autogradeItems   = explode("|*|", $testCase);
   $autogradeAnswers = explode("|*|", $answer);
 
   $constraints = explode("|*|", $constraints);
 
-  error_reporting(E_ALL);
-  ini_set("display_errors", 1);
+  #error_reporting(E_ALL);
+  #ini_set("display_errors", 1);
 
   $feedback = "";
 
@@ -38,11 +39,11 @@
     $response = preg_replace("/def (.*)\(/", "def " . $expectedCall . "(", $response);
 
     $feedback = $feedback . "Incorrect Function Name: " . $functionCall . "\n"
-                          . "Execting Function Name " . $expectedCall . "\n"
-                          . "Points Deducted: " . $constraintPoints/(sizeof($constraints) + 1) . "\n\n";
+                          . "Expected Function Name: " . $expectedCall . "\n"
+                          . "Points Deducted: " . round($constraintPoints/(sizeof($constraints) + 1), 2) . "\n\n";
   } else {
     $feedback = $feedback . "Constraint Passed: Valid Function Name: " . $functionCall . "\n"
-                          . "Points Awarded: ". $constraintPoints/(sizeof($constraints) + 1) . "\n\n";
+                          . "Points Awarded: ". round($constraintPoints/(sizeof($constraints) + 1), 2) . "\n\n";
   }
 
   // Return Calls
@@ -50,10 +51,10 @@
     $points = $points - $constraintPoints/(sizeof($constraints) + 1);
     $response = str_replace("print(", "return(", $response);
     $feedback = $feedback . "No Function Return" . "\n"
-                          . "Points Deducted: "  . $constraintPoints/(sizeof($constraints) + 1) . "\n\n";
+                          . "Points Deducted: "  . round($constraintPoints/(sizeof($constraints) + 1), 2) . "\n\n";
   } else {
     $feedback = $feedback . "Constraint Passed: Function Returns a Value" . "\n"
-                          . "Points Awarded: ". $constraintPoints/(sizeof($constraints) + 1) . "\n\n";
+                          . "Points Awarded: ". round($constraintPoints/(sizeof($constraints) + 1), 2) . "\n\n";
   }
 
   // Constraint Checking - for/while loop and if/elif/else
@@ -64,22 +65,24 @@
           $points = $points - $constraintPoints/(sizeof($constraints) + 1);
           $feedback = $feedback . "Expected use of 'for' loop or 'while' loop" . "\n"
           . "No 'for' loop or 'while' Found" . "\n"
-          . "Points Deducted: " . $constraintPoints/(sizeof($constraints) + 1) . "\n\n";
+          . "Points Deducted: " . round($constraintPoints/(sizeof($constraints) + 1), 2) . "\n\n";
         } else {
           $feedback = $feedback . "Constraint Passed: Function uses Loop" . "\n"
-                                . "Points Awarded: ". $constraintPoints/(sizeof($constraints) + 1) . "\n\n";
+                                . "Points Awarded: ". round($constraintPoints/(sizeof($constraints) + 1), 2) . "\n\n";
         }
         break;
 
       case 2:
         if(!preg_match("/if.*:/", $response)) {
-          $points = $points - $constraintPoints/(sizeof($constraints) + 1);
+          $points = $points - round($constraintPoints/(sizeof($constraints) + 1), 2);
+          s;
+
           $feedback = $feedback . "Expected use of Conditional Statements" . "\n"
           . "No 'if', 'elif', or 'else' Found" . "\n"
-          . "Points Deducted: " . $constraintPoints/(sizeof($constraints) + 1) . "\n\n";
+          . "Points Deducted: " . round($constraintPoints/(sizeof($constraints) + 1), 2) . "\n\n";
         } else {
           $feedback = $feedback . "Constraint Passed: Function uses Conditional Blocks" . "\n"
-                                . "Points Awarded: ". $constraintPoints/(sizeof($constraints) + 1) . "\n\n";
+                                . "Points Awarded: ". round($constraintPoints/(sizeof($constraints) + 1), 2) . "\n\n";
         }
         break;
     }
@@ -90,20 +93,23 @@
   $i = 0;
   foreach($autogradeItems as $item) {
     $runcase =  $response . "\n\nif __name__ == \"__main__\":\n\tprint(" . $item . ", end='')";
-      $result = shell_exec("/afs/cad/sw.common/bin/python3 2>&1 - <<EOD
+$result = shell_exec("/afs/cad/sw.common/bin/python3 2>&1 - <<EOD
 $runcase
 
 EOD");
 
     if($result != $autogradeAnswers[$i]) {
-      $points = $points - $testCasePoints/sizeof($autogradeItems);
+      $points = $points - round($testCasePoints/sizeof($autogradeItems), 2);
+      if(preg_match("/File \"<stdin>\".*/", $result)) {
+        $result = preg_replace("/File \"<stdin>\", line [0-9]+\n/", "", $result);
+      }
       $feedback = $feedback . "Test Case " . ($i+1) . " Failed.\n"
                             . "Expected "  . $autogradeAnswers[$i] . " for " . $autogradeItems[$i] . "\n"
                             . "Received "  . $result . "\n"
-                            . "Points Deducted: " . $testCasePoints/sizeof($autogradeItems) . "\n\n";
+                            . "Points Deducted: " . round($testCasePoints/sizeof($autogradeItems), 2) . "\n\n";
     } else {
       $feedback = $feedback . "Test Case " . ($i+1) . " has Passed ". "\n"
-      . "Points Awarded: ". $testCasePoints/sizeof($autogradeItems) . "\n\n";
+      . "Points Awarded: ". round($testCasePoints/sizeof($autogradeItems), 2) . "\n\n";
     }
     $i++;
   }
@@ -111,7 +117,7 @@ EOD");
 // Return Responses
 
   $response = array(
-    "points" => $points,
+    "points" => abs(round($points, 2)),
     "feedback"  => $feedback
   );
 
