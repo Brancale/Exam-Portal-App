@@ -17,6 +17,10 @@
   $autogradeAnswers = explode("|*|", $answer);
 
   $constraints = explode("|*|", $constraints);
+  $totalConstraints = sizeof($constraints) + 2;
+  if ($constraints[0] == "") {
+    $totalConstraints = $totalConstraints - 1;
+  }
 
   #error_reporting(E_ALL);
   #ini_set("display_errors", 1);
@@ -35,26 +39,26 @@
   $expectedCall = $expectedCall[1];
 
   if($functionCall != $expectedCall) {
-    $points = $points - $constraintPoints/(sizeof($constraints) + 2);
+    $points = $points - $constraintPoints/$totalConstraints;
     $response = preg_replace("/$functionCall\(/", $expectedCall . "(", $response);
 
     $feedback = $feedback . "Incorrect Function Name: " . $functionCall . "\n"
                           . "Expected Function Name: " . $expectedCall . "\n"
-                          . "Points Deducted: " . round($constraintPoints/(sizeof($constraints) + 2), 2) . "\n\n";
+                          . "Points Deducted: " . round($constraintPoints/$totalConstraints, 2) . "\n\n";
   } else {
     $feedback = $feedback . "Constraint Passed: Valid Function Name: " . $functionCall . "\n"
-                          . "Points Awarded: ". round($constraintPoints/(sizeof($constraints) + 2), 2) . "\n\n";
+                          . "Points Awarded: ". round($constraintPoints/$totalConstraints, 2) . "\n\n";
   }
 
   // Return Calls
   if(!preg_match("/return/", $response)) {
-    $points = $points - $constraintPoints/(sizeof($constraints) + 2);
+    $points = $points - $constraintPoints/$totalConstraints;
     $response = str_replace("print(", "return(", $response);
     $feedback = $feedback . "No Function Return" . "\n"
-                          . "Points Deducted: "  . round($constraintPoints/(sizeof($constraints) + 2), 2) . "\n\n";
+                          . "Points Deducted: "  . round($constraintPoints/$totalConstraints, 2) . "\n\n";
   } else {
     $feedback = $feedback . "Constraint Passed: Function Returns a Value" . "\n"
-                          . "Points Awarded: ". round($constraintPoints/(sizeof($constraints) + 2), 2) . "\n\n";
+                          . "Points Awarded: ". round($constraintPoints/$totalConstraints, 2) . "\n\n";
   }
 
   // Constraint Checking - for/while loop and if/elif/else
@@ -62,51 +66,51 @@
     switch ($constraint) {
       case 1:
         if(!preg_match("/for.*:/", $response)) {
-          $points = $points - $constraintPoints/(sizeof($constraints) + 2);
+          $points = $points - $constraintPoints/$totalConstraints;
           $feedback = $feedback . "Expected use of 'for' loop" . "\n"
           . "No 'for' loop found" . "\n"
-          . "Points Deducted: " . round($constraintPoints/(sizeof($constraints) + 2), 2) . "\n\n";
+          . "Points Deducted: " . round($constraintPoints/$totalConstraints, 2) . "\n\n";
         } else {
           $feedback = $feedback . "Constraint Passed: Function uses 'for' loop" . "\n"
-                                . "Points Awarded: ". $constraintPoints/(sizeof($constraints) + 2) . "\n\n";
+                                . "Points Awarded: ". $constraintPoints/$totalConstraints . "\n\n";
         }
         break;
 
       case 2:
         if(!preg_match("/if.*:/", $response)) {
-          $points = $points - round($constraintPoints/(sizeof($constraints) + 2), 2);
+          $points = $points - round($constraintPoints/$totalConstraints, 2);
           s;
 
           $feedback = $feedback . "Expected use of Conditional Statements" . "\n"
           . "No 'if', 'elif', or 'else' found" . "\n"
-          . "Points Deducted: " . round($constraintPoints/(sizeof($constraints) + 2), 2) . "\n\n";
+          . "Points Deducted: " . round($constraintPoints/$totalConstraints, 2) . "\n\n";
         } else {
           $feedback = $feedback . "Constraint Passed: Function uses conditional blocks" . "\n"
-                                . "Points Awarded: ". round($constraintPoints/(sizeof($constraints) + 2), 2) . "\n\n";
+                                . "Points Awarded: ". round($constraintPoints/$totalConstraints, 2) . "\n\n";
         }
         break;
 
         case 3:
           if(!preg_match("/while.*:/", $response)) {
-            $points = $points - $constraintPoints/(sizeof($constraints) + 2);
+            $points = $points - $constraintPoints/$totalConstraints;
             $feedback = $feedback . "Expected use of 'while' loop" . "\n"
             . "No 'while' found" . "\n"
-            . "Points Deducted: " . round($constraintPoints/(sizeof($constraints) + 2), 2) . "\n\n";
+            . "Points Deducted: " . round($constraintPoints/$totalConstraints, 2) . "\n\n";
           } else {
             $feedback = $feedback . "Constraint Passed: Function uses 'while' loop" . "\n"
-                                  . "Points Awarded: ". round($constraintPoints/(sizeof($constraints) + 2), 2) . "\n\n";
+                                  . "Points Awarded: ". round($constraintPoints/$totalConstraints, 2) . "\n\n";
           }
           break;
 
         case 4:
           if(substr_count($response, $expectedCall . "(") < 2) {
-            $points = $points - $constraintPoints/(sizeof($constraints) + 2);
+            $points = $points - $constraintPoints/$totalConstraints;
             $feedback = $feedback . "Expected use of recursion" . "\n"
             . "No recursion used" . "\n"
-            . "Points Deducted: " .  round($constraintPoints/(sizeof($constraints) + 2), 2) . "\n\n";
+            . "Points Deducted: " .  round($constraintPoints/$totalConstraints, 2) . "\n\n";
           } else {
             $feedback = $feedback . "Constraint Passed: Function uses recursion" . "\n"
-                                  . "Points Awarded: ". round($constraintPoints/(sizeof($constraints) + 2), 2) . "\n\n";
+                                  . "Points Awarded: ". round($constraintPoints/$totalConstraints, 2) . "\n\n";
           }
           break;
     }
