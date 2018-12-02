@@ -130,7 +130,7 @@
 
   //Evaluation Via Test Cases
 
-  $pointsPerCase = ceil($testCasePoints/sizeof($autogradeItems));
+  $pointsPerCase = round($testCasePoints/sizeof($autogradeItems));
   $i = 0;
   foreach($autogradeItems as $item) {
     $runcase =  $response . "\n\nif __name__ == \"__main__\":\n\tprint(" . $item . ", end='')";
@@ -138,7 +138,12 @@ $result = shell_exec("/afs/cad/sw.common/bin/python3 2>&1 - <<EOD
 $runcase
 
 EOD");
+/*
     if($pointsAwarded + $pointsDeducted + $pointsPerCase > $points) {
+      $pointsPerCase = $points - ($pointsAwarded + $pointsDeducted);
+    }
+    */
+    if($i == sizeof($autogradeItems) - 1) {
       $pointsPerCase = $points - ($pointsAwarded + $pointsDeducted);
     }
     if($result != $autogradeAnswers[$i]) {
