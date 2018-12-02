@@ -10,14 +10,20 @@
   $points      = $json -> {"points"};            //Points per question
 
   $points = intval($points);
-  $testCasePoints   = $points * 3/4;
-  $constraintPoints = $points * 1/4;
+  $pointsAwarded = 0;
+  $pointsDeducted = 0;
+
+  $testCasePoints = $points - 4;
+  if($constraints != 0) {
+    $testCasePoints -= 3;
+  }
 
   $autogradeItems   = explode("|*|", $testCase);
   $autogradeAnswers = explode("|*|", $answer);
 
   $constraints = explode("|*|", $constraints);
   $totalConstraints = sizeof($constraints) + 2;
+
   if ($constraints[0] == "") {
     $totalConstraints = $totalConstraints - 1;
   }
@@ -39,26 +45,29 @@
   $expectedCall = $expectedCall[1];
 
   if($functionCall != $expectedCall) {
-    $points = $points - $constraintPoints/$totalConstraints;
+    $pointsDeducted += 2;
     $response = preg_replace("/$functionCall\(/", $expectedCall . "(", $response);
 
-    $feedback = $feedback . "Incorrect Function Name: " . $functionCall . "\n"
-                          . "Expected Function Name: " . $expectedCall . "\n"
-                          . "Points Deducted: " . round($constraintPoints/$totalConstraints, 2) . "\n\n";
+    $feedback = $feedback . "<span stlye='color: red'>Incorrect Function Name: " . $functionCall . "<br>"
+                          . "Expected Function Name: " . $expectedCall . "<br>"
+                          . "Points Deducted: 2" . "</span><br><br>";
   } else {
-    $feedback = $feedback . "Constraint Passed: Valid Function Name: " . $functionCall . "\n"
-                          . "Points Awarded: ". round($constraintPoints/$totalConstraints, 2) . "\n\n";
+    $feedback = $feedback . "<span stlye='color: green'>Constraint Passed: Valid Function Name: " . $functionCall . "<br>"
+                          . "Points Awarded: 2" . "</span><br><br>";
+    $pointsAwarded += 2;
   }
 
   // Return Calls
   if(!preg_match("/return/", $response)) {
-    $points = $points - $constraintPoints/$totalConstraints;
+    $pointsDeducted += 2;
     $response = str_replace("print(", "return(", $response);
-    $feedback = $feedback . "No Function Return" . "\n"
-                          . "Points Deducted: "  . round($constraintPoints/$totalConstraints, 2) . "\n\n";
+    $feedback = $feedback . "<span style='color: red'>No Function Return" . "<br>"
+                          . "Points Deducted: 2" . "</span><br><br>";
   } else {
-    $feedback = $feedback . "Constraint Passed: Function Returns a Value" . "\n"
-                          . "Points Awarded: ". round($constraintPoints/$totalConstraints, 2) . "\n\n";
+    $feedback = $feedback . "<span stlye='color: green'>Constraint Passed: Function Returns a Value" . "<br>"
+                          . "Points Awarded:  2" . "</span><br><br>";
+    $pointsAwarded += 2;
+
   }
 
   // Constraint Checking - for/while loop and if/elif/else
@@ -66,51 +75,54 @@
     switch ($constraint) {
       case 1:
         if(!preg_match("/for.*:/", $response)) {
-          $points = $points - $constraintPoints/$totalConstraints;
-          $feedback = $feedback . "Expected use of 'for' loop" . "\n"
-          . "No 'for' loop found" . "\n"
-          . "Points Deducted: " . round($constraintPoints/$totalConstraints, 2) . "\n\n";
+          $pointsDeducted += 3;
+          $feedback = $feedback . "<span stlye='color: red'>Expected use of 'for' loop" . "<br>"
+          . "No 'for' loop found" . "<br>"
+          . "Points Deducted: 3" . "</span><br><br>";
         } else {
-          $feedback = $feedback . "Constraint Passed: Function uses 'for' loop" . "\n"
-                                . "Points Awarded: ". $constraintPoints/$totalConstraints . "\n\n";
+          $feedback = $feedback . "<span stlye='color: green'>Constraint Passed: Function uses 'for' loop" . "<br>"
+                                . "Points Awarded: 3" . "<br><br>";
+          $pointsAwarded += 3;
+
         }
         break;
 
       case 2:
         if(!preg_match("/if.*:/", $response)) {
-          $points = $points - round($constraintPoints/$totalConstraints, 2);
-          s;
-
-          $feedback = $feedback . "Expected use of Conditional Statements" . "\n"
-          . "No 'if', 'elif', or 'else' found" . "\n"
-          . "Points Deducted: " . round($constraintPoints/$totalConstraints, 2) . "\n\n";
+          $pointsDeducted += 3;
+          $feedback = $feedback . "<span stlye='color: red'>Expected use of Conditional Statements" . "<br>"
+          . "No 'if', 'elif', or 'else' found" . "<br>"
+          . "Points Deducted: 3" . "</span><br><br>";
         } else {
-          $feedback = $feedback . "Constraint Passed: Function uses conditional blocks" . "\n"
-                                . "Points Awarded: ". round($constraintPoints/$totalConstraints, 2) . "\n\n";
+          $feedback = $feedback . "<span stlye='color: green'>Constraint Passed: Function uses conditional blocks" . "<br>"
+                                . "Points Awarded: 3" . "</span><br><br>";
+          $pointsAwarded += 3;
         }
         break;
 
         case 3:
           if(!preg_match("/while.*:/", $response)) {
-            $points = $points - $constraintPoints/$totalConstraints;
-            $feedback = $feedback . "Expected use of 'while' loop" . "\n"
-            . "No 'while' found" . "\n"
-            . "Points Deducted: " . round($constraintPoints/$totalConstraints, 2) . "\n\n";
+            $pointsDeducted += 3;
+            $feedback = $feedback . "<span stlye='color: red'>Expected use of 'while' loop" . "<br>"
+            . "No 'while' found" . "<br>"
+            . "Points Deducted: 3" . "</span><br><br>";
           } else {
-            $feedback = $feedback . "Constraint Passed: Function uses 'while' loop" . "\n"
-                                  . "Points Awarded: ". round($constraintPoints/$totalConstraints, 2) . "\n\n";
+            $feedback = $feedback . "<span stlye='color: green'>Constraint Passed: Function uses 'while' loop" . "<br>"
+                                  . "Points Awarded: 3" . "</span><br><br>";
+            $pointsAwarded += 3;
           }
           break;
 
         case 4:
           if(substr_count($response, $expectedCall . "(") < 2) {
-            $points = $points - $constraintPoints/$totalConstraints;
-            $feedback = $feedback . "Expected use of recursion" . "\n"
-            . "No recursion used" . "\n"
-            . "Points Deducted: " .  round($constraintPoints/$totalConstraints, 2) . "\n\n";
+            $pointsDeducted += 3;
+            $feedback = $feedback . "<span stlye='color: red'>Expected use of recursion" . "<br>"
+            . "No recursion used" . "<br>"
+            . "Points Deducted: 3" . "</span><br><br>";
           } else {
-            $feedback = $feedback . "Constraint Passed: Function uses recursion" . "\n"
-                                  . "Points Awarded: ". round($constraintPoints/$totalConstraints, 2) . "\n\n";
+            $feedback = $feedback . "<span stlye='color: green'>Constraint Passed: Function uses recursion" . "<br>"
+                                  . "Points Awarded: 3" . "</span><br><br>";
+            $pointsAwarded += 3;
           }
           break;
     }
@@ -118,6 +130,7 @@
 
   //Evaluation Via Test Cases
 
+  $pointsPerCase = ceil($testCasePoints/sizeof($autogradeItems));
   $i = 0;
   foreach($autogradeItems as $item) {
     $runcase =  $response . "\n\nif __name__ == \"__main__\":\n\tprint(" . $item . ", end='')";
@@ -125,21 +138,26 @@ $result = shell_exec("/afs/cad/sw.common/bin/python3 2>&1 - <<EOD
 $runcase
 
 EOD");
-
+    if($originalPoints - ($pointsAwarded + $pointsDeducted) < $pointsPerCase) {
+      $pointsPerCase = $originalPoints - ($pointsAwarded + $pointsDeducted);
+    }
     if($result != $autogradeAnswers[$i]) {
-      $points = $points - round($testCasePoints/sizeof($autogradeItems), 2);
+
+      $pointsDeducted -= $pointsPerCase;
       if(preg_match("/.*File \"<stdin>\".*/", $result)) {
         $lines = explode("\n", $result);
         $lines = array_slice($lines, sizeof($lines) - 2);
         $result = implode("\n", $lines);
       }
-      $feedback = $feedback . "Test Case " . ($i+1) . " Failed.\n"
-                            . "Expected "  . $autogradeAnswers[$i] . " for " . $autogradeItems[$i] . "\n"
-                            . "Received "  . $result . "\n"
-                            . "Points Deducted: " . round($testCasePoints/sizeof($autogradeItems), 2) . "\n\n";
+      $feedback = $feedback . "<span stlye='color: red'>Test Case " . ($i+1) . " Failed.<br>"
+                            . "Expected "  . $autogradeAnswers[$i] . " for " . $autogradeItems[$i] . "<br>"
+                            . "Received "  . $result . "<br>"
+                            . "Points Deducted: " . $pointsPerCase . "</span><br><br>";
     } else {
-      $feedback = $feedback . "Test Case " . ($i+1) . " has Passed ". "\n"
-      . "Points Awarded: ". round($testCasePoints/sizeof($autogradeItems), 2) . "\n\n";
+
+      $pointsAwarded += $pointsPerCase;
+      $feedback = $feedback . "<span stlye='color: green'>Test Case " . ($i+1) . " has Passed ". "<br>"
+      . "Points Awarded: ". $pointsPerCase . "</span><br><br>";
     }
     $i++;
   }
@@ -147,7 +165,7 @@ EOD");
 // Return Responses
 
   $response = array(
-    "points" => abs(round($points, 2)),
+    "points" => max($pointsAwarded, 0),
     "feedback"  => $feedback
   );
 
