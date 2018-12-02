@@ -138,20 +138,20 @@ $result = shell_exec("/afs/cad/sw.common/bin/python3 2>&1 - <<EOD
 $runcase
 
 EOD");
-    if($originalPoints - ($pointsAwarded + $pointsDeducted) < $pointsPerCase) {
-      $pointsPerCase = $originalPoints - ($pointsAwarded + $pointsDeducted);
+    if($pointsAwarded + $pointsDeducted + $pointsPerCase > $points) {
+      $pointsPerCase = $points - ($pointsAwarded + $pointsDeducted);
     }
     if($result != $autogradeAnswers[$i]) {
 
-      $pointsDeducted -= $pointsPerCase;
+      $pointsDeducted += $pointsPerCase;
       if(preg_match("/.*File \"<stdin>\".*/", $result)) {
         $lines = explode("\n", $result);
         $lines = array_slice($lines, sizeof($lines) - 2);
         $result = implode("\n", $lines);
       }
       $feedback = $feedback . "<span stlye='color: red'>Test Case " . ($i+1) . " Failed.<br>"
-                            . "Expected "  . $autogradeAnswers[$i] . " for " . $autogradeItems[$i] . "<br>"
-                            . "Received "  . $result . "<br>"
+                            . "Expected "  . $result . " for " . $autogradeItems[$i] . "<br>"
+                            . "Received "  . $autogradeAnswers[$i] . "<br>"
                             . "Points Deducted: " . $pointsPerCase . "</span><br><br>";
     } else {
 
