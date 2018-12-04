@@ -31,7 +31,7 @@
   #error_reporting(E_ALL);
   #ini_set("display_errors", 1);
 
-  $feedback = "";
+  $feedback = "<br>"
 
   // Evaluation of Constraints
 
@@ -48,11 +48,11 @@
     $pointsDeducted += 2;
     $response = preg_replace("/$functionCall\(/", $expectedCall . "(", $response);
 
-    $feedback = $feedback . "<span stlye='color: red'>Incorrect Function Name: " . $functionCall . "<br>"
+    $feedback = $feedback . "<span style='color: red'><b>Incorrect Function Name: " . $functionCall . "</b><br>"
                           . "Expected Function Name: " . $expectedCall . "<br>"
                           . "Points Deducted: 2" . "</span><br><br>";
   } else {
-    $feedback = $feedback . "<span stlye='color: green'>Constraint Passed: Valid Function Name: " . $functionCall . "<br>"
+    $feedback = $feedback . "<span style='color: green'><b>Constraint Passed: Valid Function Name: " . $functionCall . "</b><br>"
                           . "Points Awarded: 2" . "</span><br><br>";
     $pointsAwarded += 2;
   }
@@ -61,10 +61,10 @@
   if(!preg_match("/return/", $response)) {
     $pointsDeducted += 2;
     $response = str_replace("print(", "return(", $response);
-    $feedback = $feedback . "<span style='color: red'>No Function Return" . "<br>"
+    $feedback = $feedback . "<span style='color: red'><b>No Function Return" . "</b><br>"
                           . "Points Deducted: 2" . "</span><br><br>";
   } else {
-    $feedback = $feedback . "<span stlye='color: green'>Constraint Passed: Function Returns a Value" . "<br>"
+    $feedback = $feedback . "<span style='color: green'><b>Constraint Passed: Function Returns a Value" . "</b><br>"
                           . "Points Awarded:  2" . "</span><br><br>";
     $pointsAwarded += 2;
 
@@ -76,12 +76,12 @@
       case 1:
         if(!preg_match("/for.*:/", $response)) {
           $pointsDeducted += 3;
-          $feedback = $feedback . "<span stlye='color: red'>Expected use of 'for' loop" . "<br>"
+          $feedback = $feedback . "<span style='color: red'><b>Expected use of 'for' loop" . "</b><br>"
           . "No 'for' loop found" . "<br>"
           . "Points Deducted: 3" . "</span><br><br>";
         } else {
-          $feedback = $feedback . "<span stlye='color: green'>Constraint Passed: Function uses 'for' loop" . "<br>"
-                                . "Points Awarded: 3" . "<br><br>";
+          $feedback = $feedback . "<span style='color: green'><b>Constraint Passed: Function uses 'for' loop" . "</b><br>"
+                                . "Points Awarded: 3" . "</span><br><br>";
           $pointsAwarded += 3;
 
         }
@@ -90,11 +90,11 @@
       case 2:
         if(!preg_match("/if.*:/", $response)) {
           $pointsDeducted += 3;
-          $feedback = $feedback . "<span stlye='color: red'>Expected use of Conditional Statements" . "<br>"
+          $feedback = $feedback . "<span style='color: red'><b>Expected use of Conditional Statements" . "</b><br>"
           . "No 'if', 'elif', or 'else' found" . "<br>"
           . "Points Deducted: 3" . "</span><br><br>";
         } else {
-          $feedback = $feedback . "<span stlye='color: green'>Constraint Passed: Function uses conditional blocks" . "<br>"
+          $feedback = $feedback . "<span style='color: green'><b>Constraint Passed: Function uses conditional blocks" . "</b><br>"
                                 . "Points Awarded: 3" . "</span><br><br>";
           $pointsAwarded += 3;
         }
@@ -103,11 +103,11 @@
         case 3:
           if(!preg_match("/while.*:/", $response)) {
             $pointsDeducted += 3;
-            $feedback = $feedback . "<span stlye='color: red'>Expected use of 'while' loop" . "<br>"
+            $feedback = $feedback . "<span style='color: red'><b>Expected use of 'while' loop" . "</b><br>"
             . "No 'while' found" . "<br>"
             . "Points Deducted: 3" . "</span><br><br>";
           } else {
-            $feedback = $feedback . "<span stlye='color: green'>Constraint Passed: Function uses 'while' loop" . "<br>"
+            $feedback = $feedback . "<span style='color: green'><b>Constraint Passed: Function uses 'while' loop" . "</b><br>"
                                   . "Points Awarded: 3" . "</span><br><br>";
             $pointsAwarded += 3;
           }
@@ -116,11 +116,11 @@
         case 4:
           if(substr_count($response, $expectedCall . "(") < 2) {
             $pointsDeducted += 3;
-            $feedback = $feedback . "<span stlye='color: red'>Expected use of recursion" . "<br>"
+            $feedback = $feedback . "<span style='color: red'><b>Expected use of recursion" . "</b><br>"
             . "No recursion used" . "<br>"
             . "Points Deducted: 3" . "</span><br><br>";
           } else {
-            $feedback = $feedback . "<span stlye='color: green'>Constraint Passed: Function uses recursion" . "<br>"
+            $feedback = $feedback . "<span style='color: green'><b>Constraint Passed: Function uses recursion" . "</b><br>"
                                   . "Points Awarded: 3" . "</span><br><br>";
             $pointsAwarded += 3;
           }
@@ -154,14 +154,14 @@ EOD");
         $lines = array_slice($lines, sizeof($lines) - 2);
         $result = implode("\n", $lines);
       }
-      $feedback = $feedback . "<span stlye='color: red'>Test Case " . ($i+1) . " Failed.<br>"
+      $feedback = $feedback . "<span style='color: red'><b>Test Case " . ($i+1) . " Failed.</b><br>"
                             . "Expected "  . $result . " for " . $autogradeItems[$i] . "<br>"
                             . "Received "  . $autogradeAnswers[$i] . "<br>"
                             . "Points Deducted: " . $pointsPerCase . "</span><br><br>";
     } else {
 
       $pointsAwarded += $pointsPerCase;
-      $feedback = $feedback . "<span stlye='color: green'>Test Case " . ($i+1) . " has Passed ". "<br>"
+      $feedback = $feedback . "<span style='color: green'><b>Test Case " . ($i+1) . " has Passed.</b> ". "<br>"
       . "Points Awarded: ". $pointsPerCase . "</span><br><br>";
     }
     $i++;
@@ -174,6 +174,6 @@ EOD");
     "feedback"  => $feedback
   );
 
-  echo json_encode($response);
+  echo json_encode($response, JSON_UNESCAPED_SLASHES);
 
 ?>
