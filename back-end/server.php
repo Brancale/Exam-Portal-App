@@ -9,10 +9,10 @@
 	$userpwd=$json->{"password"};
 
 	// SQL Credentials
-	$servername = "sql2.njit.edu";
-	$username = "jmb75";
+	$servername = "";
+	$username = "";
 	$password = "";
-	$dbname = "jmb75";
+	$dbname = "";
 
 	// Create connection
 	$conn = new mysqli($servername, $username, $password, $dbname);
@@ -25,7 +25,7 @@
 	// INSERT INTO `jmb75`.`USERS` (`ID`, `PWD`, `TYPE`) VALUES ('username', MD5('password'), 1);
 
 	// Query DB
-	$sql = "SELECT ID, PWD FROM USERS WHERE ID = '" . $userid . "'";
+	$sql = "SELECT * FROM USERS WHERE ID = '" . $userid . "'";
 	$result = $conn->query($sql);
 
 	// Local vars for flags and values
@@ -63,4 +63,4 @@
 	// Respond with JSON object
 	$json_response = json_encode($response);
 	echo $json_response;
-?> 
+?>

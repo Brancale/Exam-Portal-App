@@ -9,7 +9,7 @@
 	$jsonData["operationID"] = 7;
 
 	// Grade SExamID 1
-	$jsonData["SExamID"] = "1";
+	$jsonData["SExamID"] = "75";
 
 	$jsonDataEncoded = json_encode($jsonData);
 
