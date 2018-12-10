@@ -12,8 +12,8 @@
 	$jsonData = array();
 
 	// Option to get Exam ID 1
-	$jsonData["operationID"] = '4';
-	$jsonData["data"] = "1";
+	$jsonData["operationID"] = '18';
+	$jsonData["SExamID"] = 1;
 
 	// Encode the array into JSON.
 	$jsonDataEncoded = json_encode($jsonData);
@@ -23,10 +23,10 @@
 
 	// Initialize URL
 	$url = "https://web.njit.edu/~jmb75/serverOps.php";
-	 
+
 	// Specify post request in curl (CURLOPT_POST)
 	curl_setopt($postRequest, CURLOPT_POST, true);
-	 
+
 	// Attach encoded JSON string to POST fields
 	curl_setopt($postRequest, CURLOPT_POSTFIELDS, $jsonDataEncoded);
 
@@ -40,12 +40,12 @@
 
 	// Expect return value to store in $result
 	curl_setopt($postRequest, CURLOPT_RETURNTRANSFER, true);
-	 
+
 	// Set Content-Type to application/json and Content-Length to length of content.
     curl_setopt($postRequest, CURLOPT_HTTPHEADER, array(
       'Content-Type: application/json')
     );
-	 
+
 	//echo "Sending JSON obj to server...\n";
 	// Execute the request
 	$result = curl_exec($postRequest);
@@ -62,4 +62,4 @@
 	print($json_string);
 
 	//// END Collect JSON Response ////
-?> 
+?>

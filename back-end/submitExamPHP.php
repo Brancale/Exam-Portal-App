@@ -14,10 +14,20 @@
 	$jsonData["operationID"] = 5;
 
 	// Values needed
-	$jsonData["EID"] = "2";
-	$jsonData["SName"] = "sh424";
+	$jsonData["EID"] = "8";
+	$jsonData["SName"] = "student";
 	// Answers must be an array of correct answers
-	$jsonData["Answers"] = "True|*|12";
+	$jsonData["Answers"] = "True|*|def operation(op, a, b):
+    if op == '+':
+        return a + b
+    elif op == '-':
+        return a - b
+    elif op == '*':
+        return a * b
+    elif op == '/':
+        return a / b
+    else:
+        return 'error'";
 
 	// Encode the array into JSON.
 	$jsonDataEncoded = json_encode($jsonData);
@@ -52,9 +62,8 @@
 	$json = json_decode($result,true);
 	echo "\nObject received.\n";
 
-	//$json_string = json_encode($json, JSON_PRETTY_PRINT);
-	print($json["success"]);
-	print($json["test"]);
+	$json_string = json_encode($json, JSON_PRETTY_PRINT);
+	print($json_string);
 
 	//// END Collect JSON Response ////
 ?> 

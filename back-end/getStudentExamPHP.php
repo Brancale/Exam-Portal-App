@@ -12,8 +12,8 @@
 	$jsonData = array();
 
 	// Option to get Exam ID 1
-	$jsonData["operationID"] = '4';
-	$jsonData["data"] = "1";
+	$jsonData["operationID"] = '9';
+	$jsonData["SExamID"] = "1";
 
 	// Encode the array into JSON.
 	$jsonDataEncoded = json_encode($jsonData);

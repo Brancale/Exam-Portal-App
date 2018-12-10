@@ -12,8 +12,8 @@
 
 	// Test JSON for adding a question
 	$jsonData["operationID"] = '2';
-	// Data format: (Question Prompt, Question Answer, Subject, Difficulty, Points, Autograde value)
-	$jsonData["data"] = "('Test Question', 'Test Answer', 'Course', 1, 100, 'Test Autograde item')";
+	// Data format: (Question Prompt, Question Answer, Subject, Difficulty, Autograde value, Constraints)
+	$jsonData["data"] = "('Test Question', 'Test Answer', 'Course', 1, 'test1|*|test2', '1|*|2')";
 
 	// Encode the array into JSON.
 	$jsonDataEncoded = json_encode($jsonData);
